@@ -87,6 +87,40 @@ node cdp.mjs raw Input.dispatchKeyEvent '{"type":"keyDown","key":" ","code":"Spa
 node cdp.mjs raw Input.dispatchKeyEvent '{"type":"keyUp","key":" ","code":"Space","windowsVirtualKeyCode":32}'
 ```
 
+## Running it in Docker
+
+`Dockerfile` and `docker-compose.yml` build on `lscr.io/linuxserver/chromium`
+and expose CDP on the host at `http://127.0.0.1:9223`. The browser is visible
+in the web desktop at `https://localhost:3011`.
+
+One-time setup: Debian's Chromium cannot download Widevine itself, so the image
+ships it as the bundled CDM. Fill `widevine/` from a profile that has it:
+
+```bash
+cp -r profile/WidevineCdm/<version> widevine
+```
+
+Then:
+
+```bash
+docker compose up -d --build
+curl -s http://127.0.0.1:9223/json/version
+CDP_PORT=9223 node cdp.mjs tabs
+```
+
+| Piece | Purpose |
+|---|---|
+| `CHROME_CLI` | The image passes this variable to Chromium as extra flags. It is split on spaces, so values cannot contain spaces. |
+| `--user-data-dir=/config/cdp-profile` | CDP requires a non-default profile. It lives in `./config/cdp-profile` on the host, separate from `profile/`. |
+| `cdp-proxy` | Chromium binds CDP to `127.0.0.1` inside the container. This s6 service runs `socat` to relay container port 9223 to it. |
+| `PIXELFLUX_WAYLAND=false` | Runs Chromium on X11 instead of the image's default Wayland, the mode that captures DRM video in screenshots on the host (see the note below; not yet checked in the container). |
+| Host port 9223 | Avoids a clash with a host Chromium on 9222. |
+| `127.0.0.1:` port bindings | CDP gives full control of the browser, and the web desktop has no login and a passwordless-`sudo` terminal. Keep both local. |
+
+`widevine/` and `config/` are git-ignored. The Dockerfile makes the Widevine
+files world-readable, because Chromium runs as the `abc` user and cannot load
+a root-only `libwidevinecdm.so`.
+
 ## Notes
 
 - **Widevine / Netflix (error M7701-1003).** Chromium downloads the Widevine

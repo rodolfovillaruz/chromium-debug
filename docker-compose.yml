@@ -1,0 +1,18 @@
+services:
+  chromium:
+    build: .
+    container_name: chromium-debug
+    hostname: chromium-debug
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - PIXELFLUX_WAYLAND=false
+      - CHROME_CLI=--remote-debugging-port=9222 --user-data-dir=/config/cdp-profile --no-first-run --no-default-browser-check about:blank
+    volumes:
+      - ./config:/config
+    ports:
+      - 127.0.0.1:3011:3001
+      - 127.0.0.1:9223:9223
+    shm_size: "1gb"
+    restart: unless-stopped
