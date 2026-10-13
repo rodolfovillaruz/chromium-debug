@@ -117,6 +117,7 @@ CDP_PORT=9223 node cdp.mjs tabs
 | Host port 9223 | Avoids a clash with a host Chromium on 9222. |
 | Host port 3010 | The web desktop over plain http (the container's port 3000), for lan-terminal. |
 | `lan-terminal.pane` label | [lan-terminal](../lan-terminal) offers the container as `chromium-debug` in its pane menu and shows the web desktop in the pane, starting the container if it is stopped. It never stops or removes it. |
+| `extra_hosts: host.docker.internal:host-gateway` | Inside the container `localhost` is the container itself. This name points at the host, so the browser can open host services such as Restreamer at `http://host.docker.internal:8080/ui/`. Only services listening on all host interfaces (not just `127.0.0.1`) are reachable this way. |
 | `127.0.0.1:` port bindings | CDP gives full control of the browser, and the web desktop has no login and a passwordless-`sudo` terminal. Keep both local. |
 
 `widevine/` and `config/` are git-ignored. The Dockerfile makes the Widevine
