@@ -115,6 +115,8 @@ CDP_PORT=9223 node cdp.mjs tabs
 | `cdp-proxy` | Chromium binds CDP to `127.0.0.1` inside the container. This s6 service runs `socat` to relay container port 9223 to it. |
 | `PIXELFLUX_WAYLAND=false` | Runs Chromium on X11 instead of the image's default Wayland, the mode that captures DRM video in screenshots on the host (see the note below; not yet checked in the container). |
 | Host port 9223 | Avoids a clash with a host Chromium on 9222. |
+| Host port 3010 | The web desktop over plain http (the container's port 3000), for lan-terminal. |
+| `lan-terminal.pane` label | [lan-terminal](../lan-terminal) offers the container as `chromium-debug` in its pane menu and shows the web desktop in the pane, starting the container if it is stopped. It never stops or removes it. |
 | `127.0.0.1:` port bindings | CDP gives full control of the browser, and the web desktop has no login and a passwordless-`sudo` terminal. Keep both local. |
 
 `widevine/` and `config/` are git-ignored. The Dockerfile makes the Widevine

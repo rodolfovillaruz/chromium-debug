@@ -9,9 +9,13 @@ services:
       - TZ=Etc/UTC
       - PIXELFLUX_WAYLAND=false
       - CHROME_CLI=--remote-debugging-port=9222 --user-data-dir=/config/cdp-profile --no-first-run --no-default-browser-check about:blank
+    labels:
+      # Offered as "chromium-debug" in lan-terminal's pane menu, shown through port 3000.
+      - lan-terminal.pane=chromium-debug
     volumes:
       - ./config:/config
     ports:
+      - 127.0.0.1:3010:3000
       - 127.0.0.1:3011:3001
       - 127.0.0.1:9223:9223
     shm_size: "1gb"
