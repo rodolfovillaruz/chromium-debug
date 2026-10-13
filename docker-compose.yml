@@ -18,5 +18,8 @@ services:
       - 127.0.0.1:3010:3000
       - 127.0.0.1:3011:3001
       - 127.0.0.1:9223:9223
+    # Lets the browser reach host services (e.g. Restreamer on :8080) by name.
+    extra_hosts:
+      - host.docker.internal:host-gateway
     shm_size: "1gb"
     restart: unless-stopped
