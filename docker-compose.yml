@@ -8,7 +8,7 @@ services:
       - PGID=1000
       - TZ=Etc/UTC
       - PIXELFLUX_WAYLAND=false
-      - CHROME_CLI=--remote-debugging-port=9222 --user-data-dir=/config/cdp-profile --no-first-run --no-default-browser-check about:blank
+      - CHROME_CLI=--remote-debugging-port=9222 --user-data-dir=/config/chrome-profile --no-first-run --no-default-browser-check about:blank
     labels:
       # Offered as "chromium-debug" in lan-terminal's pane menu, shown through port 3000.
       - lan-terminal.pane=chromium-debug

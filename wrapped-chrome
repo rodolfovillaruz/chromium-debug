@@ -1,0 +1,16 @@
+#!/bin/bash
+# Google Chrome counterpart of the image's wrapped-chromium.
+
+BIN=/usr/bin/google-chrome-stable
+
+# Wayland check
+if [ "${PIXELFLUX_WAYLAND,,}" == "true" ]; then
+  WAYLAND="--ozone-platform=wayland"
+fi
+
+${BIN} \
+  --no-sandbox \
+  --password-store=basic \
+  --start-maximized \
+  ${WAYLAND} \
+  "$@" > /dev/null 2>&1

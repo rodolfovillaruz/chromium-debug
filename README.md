@@ -89,8 +89,9 @@ node cdp.mjs raw Input.dispatchKeyEvent '{"type":"keyUp","key":" ","code":"Space
 
 ## Running it in Docker
 
-`Dockerfile` and `docker-compose.yml` build on `lscr.io/linuxserver/chromium`
-and expose CDP on the host at `http://127.0.0.1:9223`. The browser is visible
+`Dockerfile` and `docker-compose.yml` build on `lscr.io/linuxserver/chromium`,
+add Google Chrome, and start Chrome instead of the image's Debian Chromium
+(Twitch's login rejects that Chromium as an unsupported browser). They expose CDP on the host at `http://127.0.0.1:9223`. The browser is visible
 in the web desktop at `https://localhost:3011`.
 
 One-time setup: Debian's Chromium cannot download Widevine itself, so the image
@@ -111,7 +112,8 @@ CDP_PORT=9223 node cdp.mjs tabs
 | Piece | Purpose |
 |---|---|
 | `CHROME_CLI` | The image passes this variable to Chromium as extra flags. It is split on spaces, so values cannot contain spaces. |
-| `--user-data-dir=/config/cdp-profile` | CDP requires a non-default profile. It lives in `./config/cdp-profile` on the host, separate from `profile/`. |
+| `--user-data-dir=/config/chrome-profile` | CDP requires a non-default profile. It lives in `./config/chrome-profile` on the host, separate from `profile/`. The earlier Chromium profile is left in `./config/cdp-profile`. |
+| `wrapped-chrome` | Chrome counterpart of the image's `wrapped-chromium` (adds `--no-sandbox`, `--password-store=basic`, `--start-maximized`). The image's default autostart runs it. An existing `config/.config/openbox/autostart` is not replaced on rebuild, so it has to say `wrapped-chrome ${CHROME_CLI}` too. Chromium is still in the desktop's right-click menu. |
 | `cdp-proxy` | Chromium binds CDP to `127.0.0.1` inside the container. This s6 service runs `socat` to relay container port 9223 to it. |
 | `PIXELFLUX_WAYLAND=false` | Runs Chromium on X11 instead of the image's default Wayland, the mode that captures DRM video in screenshots on the host (see the note below; not yet checked in the container). |
 | Host port 9223 | Avoids a clash with a host Chromium on 9222. |
